@@ -1,39 +1,24 @@
 import './App.css';
-import React, { Component } from 'react';
-import getHealthCheckUrl from "./util/UrlProvider";
+import NewLeadPage from "./module/lead/page/new_lead/NewLead";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import HealthCheck from "./module/common/components/health_check/HealthCheck";
+import EditLeadPage from "./module/lead/page/edit_lead/EditLeadPage";
+import LeadListPage from "./module/lead/page/lead_list/LeadListPage";
+import React from 'react';
 
-
-
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {healthCheck: "Don't know"};
-    }
-
-    componentDidMount() {
-        fetch(getHealthCheckUrl())
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        healthCheck: result.status
-                    });
-                }
-            )
-    }
-
-    render() {
-        // get the status from the state
-        const healthCheck = this.state.healthCheck;
-
-        return (
-            <div className="App">
-                <header className="App-header">
-                    Server HealthCheck status: {healthCheck}
-                </header>
-            </div>
-        );
-    }
+const App = () => {
+    return (
+        <BrowserRouter>
+            <div style={{textAlign: 'center', marginTop: "20px"}} >Представте, что здесь навигация</div>
+            <Routes>
+                <Route index element={<HealthCheck />} />
+                <Route path="lead/new" element={<NewLeadPage />} />
+                <Route path="lead/edit" element={<EditLeadPage />} />
+                <Route path="lead/list" element={<LeadListPage />} />
+                <Route path="*" element={<HealthCheck />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;

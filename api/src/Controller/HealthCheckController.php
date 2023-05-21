@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HealthCheckController extends AbstractFOSRestController
 {
-    #[Route('/healthCheck', name: 'healthCheck', methods: ['GET'])]
+    #[Route('/api/healthCheck', name: 'healthCheck', methods: ['GET'])]
     public function getHealthCheck(): JsonResponse
     {
         return new JsonResponse([

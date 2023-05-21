@@ -1,4 +1,4 @@
-const apiEndpoint = 'http://localhost:90';
+const apiEndpoint = 'http://localhost:90/api';
 
 const getHealthCheckUrl = () => {
     return apiEndpoint + '/healthCheck'

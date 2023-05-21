@@ -39,3 +39,6 @@ new_migration:
 
 migrate:
 	docker-compose exec api php bin/console doctrine:migrations:migrate
+
+check_headers:
+	curl -v -X POST http://localhost:90/lead/create -H "Content-Type: application/json" -d '{"status": 1, "product": 3}'
