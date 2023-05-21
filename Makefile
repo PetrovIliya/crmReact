@@ -33,3 +33,9 @@ mysql:
 
 phpstorm:
 	sudo ~/.local/share/JetBrains/Toolbox/apps/PhpStorm/ch-0/231.9011.38/bin/phpstorm.sh
+
+new_migration:
+	docker-compose exec api php bin/console doctrine:migrations:generate
+
+migrate:
+	docker-compose exec api php bin/console doctrine:migrations:migrate

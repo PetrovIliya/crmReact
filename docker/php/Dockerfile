@@ -1,5 +1,4 @@
 FROM php:8.2.2-fpm
-MAINTAINER Mina Sami <mina.nsami@gmail.com>
 
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get update \
