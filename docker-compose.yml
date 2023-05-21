@@ -1,0 +1,71 @@
+version: "3.7"
+
+services:
+  nginx:
+    build: docker/nginx
+    restart: on-failure
+    volumes:
+      # this will mount the api folder which contains the code to the docker container
+      - ${PWD}/api:/var/www/api:delegated
+      # this will mount the nginx logs so that you can check the logs for errors,
+      # without logging into the container
+      - ${PWD}/var/logs/nginx/:/var/log/nginx:delegated
+      # this will create the server config to serve the api
+      - ${PWD}/docker/nginx/api.conf:/etc/nginx/conf.d/api.conf:delegated
+    ports:
+      - "90:80"
+    depends_on:
+      - api
+      - ui
+    networks:
+      - crm_react_nw
+
+  api:
+    build: docker/php
+    restart: on-failure
+    links:
+      - mysql
+    volumes:
+      # this will mount the api folder which contains the code to the docker container
+      - ${PWD}/api:/var/www/api:delegated
+      # this will mount the custom `.ini` to the container
+      - ${PWD}/docker/php/php.ini:/usr/local/etc/php/php.ini:ro
+    networks:
+      - crm_react_nw
+
+  ui:
+    build: ./ui
+    restart: on-failure
+    # below line starts the project
+    command: "npm start"
+    depends_on:
+      - api
+    networks:
+      - crm_react_nw
+    volumes:
+      # this will mount the ui folder which contains the code to the docker container
+      - ${PWD}/ui:/var/www/ui:delegated
+    ports:
+      - "3000:3000"
+
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_DATABASE=crm
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=123
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - crm_react_nw
+
+networks:
+  crm_react_nw:
+    driver: bridge
+
+volumes:
+  mysql:
+    driver: local

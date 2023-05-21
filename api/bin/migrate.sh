@@ -1,0 +1,1 @@
+php console doctrine:migrations:migrate
