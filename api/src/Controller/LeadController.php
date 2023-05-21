@@ -17,7 +17,7 @@ class LeadController extends AbstractFOSRestController
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {}
 
-    #[Route('/lead/create', name: 'lead_create', methods: ['POST'])]
+    #[Route('/api/lead/create', name: 'lead_create', methods: ['POST'])]
     public function createLead(Request $request): JsonResponse
     {
         if ($this->getLeadIdFromRequest($request))
@@ -34,7 +34,7 @@ class LeadController extends AbstractFOSRestController
         ]);
     }
 
-    #[Route('/lead/update', name: 'lead_update', methods: ['POST'])]
+    #[Route('/api/lead/update', name: 'lead_update', methods: ['POST'])]
     public function updateLead(Request $request): JsonResponse
     {
         if (!$this->getLeadIdFromRequest($request))
@@ -53,7 +53,7 @@ class LeadController extends AbstractFOSRestController
         ]);
     }
 
-    #[Route('/lead/delete', name: 'lead_delete', methods: ['POST'])]
+    #[Route('/api/lead/delete', name: 'lead_delete', methods: ['POST'])]
     public function deleteLead(Request $request): JsonResponse
     {
         if (!$leadId = $this->getLeadIdFromRequest($request))
@@ -72,7 +72,7 @@ class LeadController extends AbstractFOSRestController
         ]);
     }
 
-    #[Route('/lead/list', name: 'lead_list', methods: ['GET'])]
+    #[Route('/api/lead/list', name: 'lead_list', methods: ['GET'])]
     public function getLeads(Request $request): JsonResponse
     {
         $limit = $request->query->get('limit') ?: self::DEFAULT_LEAD_LIMIT;
