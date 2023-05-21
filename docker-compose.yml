@@ -32,6 +32,8 @@ services:
       - ${PWD}/docker/php/php.ini:/usr/local/etc/php/php.ini:ro
     networks:
       - crm_react_nw
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   ui:
     build: ./ui

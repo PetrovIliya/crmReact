@@ -71,7 +71,7 @@ class LeadRepository extends EntityRepository
             'address' => $lead->getAddress(),
             'city' => $lead->getCity(),
             'state' => $lead->getState(),
-            'postcode' => $lead->getPostCode(),
+            'postcode' => $lead->getPostcode(),
             'country' => $lead->getCountry(),
             'is_deleted' => $lead->isDeleted(),
             'source' => $lead->getSource()
@@ -87,5 +87,28 @@ class LeadRepository extends EntityRepository
         SQL, $rsm);
 
         $query->execute(['lead_id' => $leadId]);
+    }
+
+
+    /**
+     * @return Lead[]
+     */
+    public function fetch(int $limit = null, string $orderDirection = null): array
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('l')
+            ->from(Lead::class, 'l');
+
+        if ($limit)
+        {
+            $qb->setMaxResults($limit);
+        }
+
+        if ($orderDirection)
+        {
+            $qb->orderBy('l.leadId', $orderDirection);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class LeadController extends AbstractFOSRestController
 {
+    const DEFAULT_LEAD_LIMIT = 100;
+
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {}
 
@@ -70,6 +72,17 @@ class LeadController extends AbstractFOSRestController
         ]);
     }
 
+    #[Route('/lead/list', name: 'lead_list', methods: ['GET'])]
+    public function getLeads(Request $request): JsonResponse
+    {
+        $limit = $request->query->get('limit') ?: self::DEFAULT_LEAD_LIMIT;
+        $orderDirection = $request->query->get('order_direction') ?: null;
+
+        $leads = $this->getLeadRepository()->fetch($limit, $orderDirection);
+
+        return new JsonResponse($this->leadsToArray($leads));
+    }
+
     private function getLeadFromRequest(Request $request): ?Lead
     {
         $params = $request->toArray();
@@ -78,13 +91,13 @@ class LeadController extends AbstractFOSRestController
             $params['lead_id'] ?? null,
             $params['first_name'] ?? null,
             $params['last_name'] ?? null,
-            $params[''] ?? null,
+            $params['company_name'] ?? null,
             $params['email'] ?? null,
             $params['status'] ?? null,
             $params['product'] ?? null,
             $params['source_description'] ?? null,
             $params['department'] ?? null,
-            $params[''] ?? null,
+            $params['job_title'] ?? null,
             $params['phone'] ?? null,
             $params['fax'] ?? null,
             $params['address'] ?? null,
@@ -98,6 +111,37 @@ class LeadController extends AbstractFOSRestController
         );
     }
 
+    /**
+     * @param Lead[] $leads
+     * @return array<int, array<string, string>>
+     */
+    private function leadsToArray(array $leads): array
+    {
+        return array_map(static function(Lead $lead) {
+            return [
+                'lead_id' => $lead->getLeadId(),
+                'first_name' => $lead->getFirstName(),
+                'last_name' => $lead->getLastName(),
+                'company_name' => $lead->getCompanyName(),
+                'email' => $lead->getEmail(),
+                'status' => $lead->getStatus(),
+                'product' => $lead->getProduct(),
+                'source_description' => $lead->getSourceDescription(),
+                'department' => $lead->getDepartment(),
+                'job_title' => $lead->getJobTitle(),
+                'phone' => $lead->getPhone(),
+                'fax' => $lead->getFax(),
+                'address' => $lead->getAddress(),
+                'city' => $lead->getCity(),
+                'state' => $lead->getState(),
+                'post_code' => $lead->getPostcode(),
+                'country' => $lead->getCountry(),
+                'is_deleted' => $lead->isDeleted(),
+                'source' => $lead->getSource()
+            ];
+        }, $leads);
+    }
+
     private function getLeadRepository(): LeadRepository
     {
         /** @var LeadRepository $repository */
@@ -108,6 +152,5 @@ class LeadController extends AbstractFOSRestController
     private function getLeadIdFromRequest(Request $request): ?int
     {
         return $request->toArray()['lead_id'] ?? null;
-
     }
 }

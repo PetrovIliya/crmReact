@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity(repositoryClass: LeadRepository::class)]
-#[Table(name: 'lead')]
+#[Table(name: '`lead`')]
 class Lead
 {
     #[Id]
@@ -47,12 +47,12 @@ class Lead
     #[Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $state;
     #[Column(type: Types::STRING, length: 50, nullable: true)]
-    private ?string $postCode;
+    private ?string $postcode;
     #[Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $country;
     #[Column(type: Types::INTEGER, nullable: false)]
     private bool $isDeleted;
-    #[Column(type: Types::DATE_IMMUTABLE, nullable: false)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     private ?\DateTimeImmutable $createdAt;
     #[Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $source;
@@ -74,7 +74,7 @@ class Lead
         $this->address = $address;
         $this->city = $city;
         $this->state = $state;
-        $this->postCode = $postCode;
+        $this->postcode = $postCode;
         $this->country = $country;
         $this->isDeleted = $isDeleted;
         $this->createdAt = $createdAt;
@@ -156,9 +156,9 @@ class Lead
         return $this->state;
     }
 
-    public function getPostCode(): ?string
+    public function getPostcode(): ?string
     {
-        return $this->postCode;
+        return $this->postcode;
     }
 
     public function getCountry(): ?string
@@ -256,9 +256,9 @@ class Lead
         $this->state = $state;
     }
 
-    public function setPostCode(?string $postCode): void
+    public function setPostcode(?string $postcode): void
     {
-        $this->postCode = $postCode;
+        $this->postcode = $postcode;
     }
 
     public function setCountry(?string $country): void
