@@ -17,7 +17,7 @@ class LeadController extends AbstractFOSRestController
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {}
 
-    #[Route('/api/lead/create', name: 'lead_create', methods: ['POST'])]
+    #[Route('/api/lead/create', name: 'lead_create', methods: ['POST', 'OPTION'])]
     public function createLead(Request $request): JsonResponse
     {
         if ($this->getLeadIdFromRequest($request))
