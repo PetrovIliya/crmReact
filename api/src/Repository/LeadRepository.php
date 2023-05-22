@@ -6,16 +6,15 @@ use App\Entity\Lead;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 
-/** @method Lead find($id, $lockMode = null, $lockVersion = null) */
+/** @method Lead|null find($id, $lockMode = null, $lockVersion = null) */
 class LeadRepository extends EntityRepository
 {
-    public function store(Lead $lead): void
+    public function create(Lead $lead): int
     {
         $rsm = new ResultSetMapping();
         $query = $this->getEntityManager()->createNativeQuery(<<<SQL
         INSERT INTO `lead`
         SET
-            lead_id = :lead_id,
             first_name = :first_name,
             last_name = :last_name,
             company_name = :company_name,
@@ -32,50 +31,43 @@ class LeadRepository extends EntityRepository
             state = :state,
             postcode = :postcode,
             country = :country,
-            is_deleted = :is_deleted,
-            source = :source        
-        ON DUPLICATE KEY UPDATE 
-            first_name = :first_name,
-            last_name = :last_name,
-            company_name = :company_name,
-            email = :email,
-            status = :status,
-            product = :product,
-            source_description = :source_description,
-            department = :department,
-            job_title = :job_title,
-            phone = :phone,
-            fax = :fax,
-            address = :address,
-            city = :city,
-            state = :state,
-            postcode = :postcode,
-            country = :country,
-            is_deleted = :is_deleted,
+            is_test = :is_test,
             source = :source
         SQL, $rsm);
 
-        $query->execute([
-            'lead_id' => $lead->getLeadId(),
-            'first_name' => $lead->getFirstName(),
-            'last_name' => $lead->getLastName(),
-            'company_name' => $lead->getCompanyName(),
-            'email' => $lead->getEmail(),
-            'status' => $lead->getStatus(),
-            'product' => $lead->getProduct(),
-            'source_description' => $lead->getSourceDescription(),
-            'department' => $lead->getDepartment(),
-            'job_title' => $lead->getJobTitle(),
-            'phone' => $lead->getPhone(),
-            'fax' => $lead->getFax(),
-            'address' => $lead->getAddress(),
-            'city' => $lead->getCity(),
-            'state' => $lead->getState(),
-            'postcode' => $lead->getPostcode(),
-            'country' => $lead->getCountry(),
-            'is_deleted' => $lead->isDeleted(),
-            'source' => $lead->getSource()
-        ]);
+        $query->execute($this->getLeadParams($lead));
+
+        return (int) $this->getEntityManager()->getConnection()->lastInsertId();
+    }
+
+    public function update(Lead $lead): void
+    {
+        $rsm = new ResultSetMapping();
+        $query = $this->getEntityManager()->createNativeQuery(<<<SQL
+        UPDATE `lead`
+        SET
+            first_name = :first_name,
+            last_name = :last_name,
+            company_name = :company_name,
+            email = :email,
+            status = :status,
+            product = :product,
+            source_description = :source_description,
+            department = :department,
+            job_title = :job_title,
+            phone = :phone,
+            fax = :fax,
+            address = :address,
+            city = :city,
+            state = :state,
+            postcode = :postcode,
+            country = :country,
+            is_test = :is_test,
+            source = :source
+        WHERE lead_id = :lead_id
+        SQL, $rsm);
+
+        $query->execute(array_merge(['lead_id' => $lead->getLeadId(), $this->getLeadParams($lead)]));
     }
 
     public function delete(int $leadId): void
@@ -110,5 +102,29 @@ class LeadRepository extends EntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    private function getLeadParams(Lead $lead): array
+    {
+        return [
+            'first_name' => $lead->getFirstName(),
+            'last_name' => $lead->getLastName(),
+            'company_name' => $lead->getCompanyName(),
+            'email' => $lead->getEmail(),
+            'status' => $lead->getStatus(),
+            'product' => $lead->getProduct(),
+            'source_description' => $lead->getSourceDescription(),
+            'department' => $lead->getDepartment(),
+            'job_title' => $lead->getJobTitle(),
+            'phone' => $lead->getPhone(),
+            'fax' => $lead->getFax(),
+            'address' => $lead->getAddress(),
+            'city' => $lead->getCity(),
+            'state' => $lead->getState(),
+            'postcode' => $lead->getPostcode(),
+            'country' => $lead->getCountry(),
+            'is_test' => $lead->isTest(),
+            'source' => $lead->getSource()
+        ];
     }
 }

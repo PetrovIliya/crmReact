@@ -1,7 +1,9 @@
 const apiEndpoint = 'http://localhost:90/api';
 
-const getLeadCreateUrl = () => {
+export const getLeadCreateUrl = () => {
     return apiEndpoint + '/lead/create'
 }
 
-export default getLeadCreateUrl
+export const getFindLeadByLeadIdUrl = () => {
+    return apiEndpoint + '/lead'
+}

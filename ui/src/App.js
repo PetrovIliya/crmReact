@@ -1,5 +1,5 @@
 import './App.css';
-import NewLeadPage from "./module/lead/page/new_lead/NewLead";
+import NewLeadPage from "./module/lead/page/new_lead/NewLeadPage";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import HealthCheck from "./module/common/components/health_check/HealthCheck";
 import EditLeadPage from "./module/lead/page/edit_lead/EditLeadPage";

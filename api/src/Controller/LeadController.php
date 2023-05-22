@@ -27,10 +27,10 @@ class LeadController extends AbstractFOSRestController
             ], 400);
         }
 
-        $this->getLeadRepository()->store($this->getLeadFromRequest($request));
+        $leadId = $this->getLeadRepository()->create($this->getLeadFromRequest($request));
 
         return new JsonResponse([
-            'OK'
+            'lead_id' => $leadId
         ]);
     }
 
@@ -46,7 +46,7 @@ class LeadController extends AbstractFOSRestController
             ], 400);
         }
 
-        $this->getLeadRepository()->store($this->getLeadFromRequest($request));
+        $this->getLeadRepository()->update($this->getLeadFromRequest($request));
 
         return new JsonResponse([
             'OK'
@@ -83,29 +83,50 @@ class LeadController extends AbstractFOSRestController
         return new JsonResponse($this->leadsToArray($leads));
     }
 
+    #[Route('/api/lead/', name: 'lead_by_id', methods: ['GET'])]
+    public function getLeadById(Request $request): JsonResponse
+    {
+        $leadId = $request->query->get('lead_id');
+        if (!$leadId)
+        {
+            return new JsonResponse([
+                'errors' => 'lead_id required'
+            ], 400);
+        }
+
+        if (!$lead = $this->getLeadRepository()->find($leadId))
+        {
+            return new JsonResponse([
+                'errors' => 'Lead not found'
+            ], 422);
+        }
+
+        return new JsonResponse($this->leadToArray($lead));
+    }
+
     private function getLeadFromRequest(Request $request): ?Lead
     {
         $params = $request->toArray();
 
         return new Lead(
             $params['lead_id'] ?? null,
-            $params['first_name'] ?? null,
-            $params['last_name'] ?? null,
-            $params['company_name'] ?? null,
+            $params['firstName'] ?? null,
+            $params['lastName'] ?? null,
+            $params['companyName'] ?? null,
             $params['email'] ?? null,
-            $params['status'] ?? null,
+            'New',
             $params['product'] ?? null,
-            $params['source_description'] ?? null,
+            $params['sourceDescription'] ?? null,
             $params['department'] ?? null,
-            $params['job_title'] ?? null,
+            $params['jobTitle'] ?? null,
             $params['phone'] ?? null,
             $params['fax'] ?? null,
             $params['address'] ?? null,
             $params['city'] ?? null,
             $params['state'] ?? null,
-            $params['post_code'] ?? null,
+            $params['postcode'] ?? null,
             $params['country'] ?? null,
-            isset($params['is_deleted']) && (bool)$params['is_deleted'],
+            isset($params['isTest']) && (bool)$params['isTest'],
             null,
             $params['source'] ?? null,
         );
@@ -118,28 +139,33 @@ class LeadController extends AbstractFOSRestController
     private function leadsToArray(array $leads): array
     {
         return array_map(static function(Lead $lead) {
-            return [
-                'lead_id' => $lead->getLeadId(),
-                'first_name' => $lead->getFirstName(),
-                'last_name' => $lead->getLastName(),
-                'company_name' => $lead->getCompanyName(),
-                'email' => $lead->getEmail(),
-                'status' => $lead->getStatus(),
-                'product' => $lead->getProduct(),
-                'source_description' => $lead->getSourceDescription(),
-                'department' => $lead->getDepartment(),
-                'job_title' => $lead->getJobTitle(),
-                'phone' => $lead->getPhone(),
-                'fax' => $lead->getFax(),
-                'address' => $lead->getAddress(),
-                'city' => $lead->getCity(),
-                'state' => $lead->getState(),
-                'post_code' => $lead->getPostcode(),
-                'country' => $lead->getCountry(),
-                'is_deleted' => $lead->isDeleted(),
-                'source' => $lead->getSource()
-            ];
+           return $this->leadToArray($lead);
         }, $leads);
+    }
+
+    private function leadToArray(Lead $lead): array
+    {
+        return [
+            'leadId' => $lead->getLeadId(),
+            'firstName' => $lead->getFirstName(),
+            'lastName' => $lead->getLastName(),
+            'companyName' => $lead->getCompanyName(),
+            'email' => $lead->getEmail(),
+            'status' => $lead->getStatus(),
+            'product' => $lead->getProduct(),
+            'sourceDescription' => $lead->getSourceDescription(),
+            'department' => $lead->getDepartment(),
+            'jobTitle' => $lead->getJobTitle(),
+            'phone' => $lead->getPhone(),
+            'fax' => $lead->getFax(),
+            'address' => $lead->getAddress(),
+            'city' => $lead->getCity(),
+            'state' => $lead->getState(),
+            'postcode' => $lead->getPostcode(),
+            'country' => $lead->getCountry(),
+            'isTest' => $lead->isTest(),
+            'source' => $lead->getSource()
+        ];
     }
 
     private function getLeadRepository(): LeadRepository

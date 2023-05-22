@@ -38,14 +38,13 @@ final class Version20230521103632 extends AbstractMigration
           `state` VARCHAR(100) DEFAULT NULL,
           `postcode` VARCHAR(50) DEFAULT NULL,
           `country` VARCHAR(100) DEFAULT NULL,
-          `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
+          `is_test` TINYINT(1) NOT NULL DEFAULT '0',
           `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           `source` VARCHAR(100) DEFAULT NULL,
           PRIMARY KEY (`lead_id`),
           KEY `status` (`status`),
           KEY `email` (`email`),
-          KEY `company_name` (`company_name`),
-          KEY `is_deleted` (`is_deleted`)
+          KEY `company_name` (`company_name`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         SQL);
     }

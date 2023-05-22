@@ -50,14 +50,14 @@ class Lead
     private ?string $postcode;
     #[Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $country;
-    #[Column(type: Types::INTEGER, nullable: false)]
-    private bool $isDeleted;
+    #[Column(type: Types::BOOLEAN, nullable: false)]
+    private bool $isTest;
     #[Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     private ?\DateTimeImmutable $createdAt;
     #[Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $source;
 
-    public function __construct(?int $leadId, ?string $firstName, ?string $lastName, ?string $companyName, ?string $email, string $status, string $product, ?string $sourceDescription, ?string $department, ?string $jobTitle, ?string $phone, ?string $fax, ?string $address, ?string $city, ?string $state, ?string $postCode, ?string $country, bool $isDeleted, ?\DateTimeImmutable $createdAt, ?string $source)
+    public function __construct(?int $leadId, ?string $firstName, ?string $lastName, ?string $companyName, ?string $email, string $status, string $product, ?string $sourceDescription, ?string $department, ?string $jobTitle, ?string $phone, ?string $fax, ?string $address, ?string $city, ?string $state, ?string $postCode, ?string $country, bool $isTest, ?\DateTimeImmutable $createdAt, ?string $source)
     {
         $this->leadId = $leadId;
         $this->firstName = $firstName;
@@ -76,7 +76,7 @@ class Lead
         $this->state = $state;
         $this->postcode = $postCode;
         $this->country = $country;
-        $this->isDeleted = $isDeleted;
+        $this->isTest = $isTest;
         $this->createdAt = $createdAt;
         $this->source = $source;
     }
@@ -166,9 +166,9 @@ class Lead
         return $this->country;
     }
 
-    public function isDeleted(): bool
+    public function isTest(): bool
     {
-        return $this->isDeleted;
+        return $this->isTest;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -266,9 +266,9 @@ class Lead
         $this->country = $country;
     }
 
-    public function setIsDeleted(bool $isDeleted): void
+    public function setIsTest(bool $isTest): void
     {
-        $this->isDeleted = $isDeleted;
+        $this->isTest = $isTest;
     }
 
     public function setCreatedAt(?\DateTimeImmutable $createdAt): void

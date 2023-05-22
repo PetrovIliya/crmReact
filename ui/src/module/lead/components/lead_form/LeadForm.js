@@ -2,25 +2,23 @@ import "./LeadForm.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import {useForm} from "react-hook-form";
-import {Button, Form} from "react-bootstrap";
+import {Button, Form, Spinner} from "react-bootstrap";
 
 /** @param {{
  * isNew: boolean,
  * formLabel: string,
  * onSubmit: function,
- * formInitialValues: {
- *     status: string
- * }
+ * formValues: Object
 }} props **/
 const LeadForm = props => {
     const {
         register,
         handleSubmit,
-        formState: {errors}
-    } = useForm({defaultValues: props.formInitialValues});
+        formState: {errors, isSubmitting, isDirty}
+    } = useForm({values: props.formValues ?? null});
 
     const onSubmit = (data) => {
-        console.log(data);
+        window.setTimeout(() => {}, 11);
         if (props.onSubmit) {
             props.onSubmit(data);
         }
@@ -30,14 +28,14 @@ const LeadForm = props => {
         <div className="lead-form-container">
             <div className="lead-form__title">{props.formLabel}</div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="lead-form">
+            <form onSubmit={handleSubmit(onSubmit)} className="lead-form" aria-disabled={true}>
                 <div className="lead-form__content">
                     <div className="lead-form__column">
 
                         {!props.isNew && (<Form.Group className="mb-3 lead-form__field" controlId="status">
                             <Form.Label className="lead-form__label">Status</Form.Label>
                             <div className="lead-form__input lead-form__status_input">
-                                {props.formInitialValues.status}
+                                {props.formValues && props.formValues.status}
                             </div>
                         </Form.Group>)}
 
@@ -54,8 +52,7 @@ const LeadForm = props => {
                             />
                         </Form.Group>
                         {errors.firstName && <p className="errorMsg">{errors.firstName.message}</p>}
-                        {errors.firstName && errors.firstName.type === "maxLength" &&
-                            <div className="errorMsg">Max length exceeded</div>}
+                        {errors.firstName && errors.firstName.type === "maxLength" && <div className="errorMsg">Max length exceeded</div>}
 
                         <Form.Group className="mb-3 lead-form__field" controlId="lastName">
                             <Form.Label className="lead-form__label">Last Name</Form.Label>
@@ -68,8 +65,7 @@ const LeadForm = props => {
                             />
                         </Form.Group>
                         {errors.lastName && <p className="errorMsg">{errors.lastName.message}</p>}
-                        {errors.lastName && errors.lastName.type === "maxLength" &&
-                            <div className="errorMsg">Max length exceeded</div>}
+                        {errors.lastName && errors.lastName.type === "maxLength" && <div className="errorMsg">Max length exceeded</div>}
 
                         <Form.Group className="mb-3 lead-form__field" controlId="email">
                             <Form.Label className="lead-form__label">Email</Form.Label>
@@ -127,8 +123,20 @@ const LeadForm = props => {
                             />
                         </Form.Group>
                         {errors.source && <p className="errorMsg">{errors.source.message}</p>}
-                        {errors.source && errors.source.type === "maxLength" &&
-                            <div className="errorMsg">Max length exceeded</div>}
+                        {errors.source && errors.source.type === "maxLength" && <div className="errorMsg">Max length exceeded</div>}
+
+                        <Form.Group className="mb-3 lead-form__field" controlId="companyName">
+                            <Form.Label className="lead-form__label">Company Name</Form.Label>
+                            <Form.Control
+                                className="lead-form__input"
+                                placeholder="Enter company name"
+                                {...register("companyName", {
+                                    maxLength: 100
+                                })}
+                            />
+                        </Form.Group>
+                        {errors.companyName && <p className="errorMsg">{errors.companyName.message}</p>}
+                        {errors.companyName && errors.companyName.type === "maxLength" && <div className="errorMsg">Max length exceeded</div>}
 
                         <Form.Group className="mb-3 lead-form__field" controlId="isTest">
                             <Form.Label className="lead-form__label">Is Test</Form.Label>
@@ -143,15 +151,6 @@ const LeadForm = props => {
                     </div>
 
                     <div className="lead-form__column">
-
-                        {(!props.isNew) && (<Form.Group className="mb-3 lead-form__field" controlId="companyName">
-                            <Form.Label className="lead-form__label">Company Name</Form.Label>
-                            <Form.Control
-                                className="lead-form__input"
-                                type="input"
-                                readOnly={true}
-                            />
-                        </Form.Group>)}
 
                         <Form.Group className="mb-3 lead-form__field" controlId="jobTitle">
                             <Form.Label className="lead-form__label">Job Title</Form.Label>
@@ -260,12 +259,19 @@ const LeadForm = props => {
                     </div>
                 </div>
 
-                <Button type="button" variant="primary" className="lead-form__button">
+                <Button type="button" variant="primary" className="lead-form__button" disabled={isSubmitting}>
                     Qualify
                 </Button>
 
-                <Button type="submit" variant="primary" className="lead-form__button">
-                    Save
+                <Button type="submit" variant="primary" className="lead-form__button" disabled={!isDirty || isSubmitting}>
+                    {isSubmitting && <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                    />}
+                    {!isSubmitting && <span>Save</span>}
                 </Button>
             </form>
         </div>
