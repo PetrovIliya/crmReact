@@ -18,7 +18,6 @@ const LeadForm = props => {
     } = useForm({values: props.formValues ?? null});
 
     const onSubmit = async (data) => {
-        window.setTimeout(() => {}, 11);
         if (props.onSubmit) {
             await props.onSubmit(data);
         }
