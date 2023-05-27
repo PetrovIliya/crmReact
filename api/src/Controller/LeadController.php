@@ -138,7 +138,7 @@ class LeadController extends AbstractFOSRestController
      */
     private function leadsToArray(array $leads): array
     {
-        return array_map(static function(Lead $lead) {
+        return array_map(function(Lead $lead) {
            return $this->leadToArray($lead);
         }, $leads);
     }

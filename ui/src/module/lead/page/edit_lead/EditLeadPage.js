@@ -1,15 +1,18 @@
 import "./EditLeadPage.css"
 import LeadForm from "../../components/lead_form/LeadForm";
 import {useSearchParams} from "react-router-dom";
-import {getFindLeadByLeadIdUrl} from "../../lib/LeadUrlProvider";
+import {getFindLeadByLeadIdUrl, getUpdateLeadUrl} from "../../lib/LeadUrlProvider";
 import {useData} from "../../../common/hooks/UseData";
+import axios from "axios";
+import React from 'react';
 
 const EditLeadPage = props => {
     const [searchParams] = useSearchParams();
-    const { data: lead } = useData(getFindLeadByLeadIdUrl(), { lead_id: searchParams.get('lead_id') });
+    const leadId = searchParams.get('lead_id');
+    const { data: lead } = useData(getFindLeadByLeadIdUrl(), { lead_id: leadId });
 
-    const onFormSubmit = data => {
-
+    const onFormSubmit = async data => {
+        await axios.post(getUpdateLeadUrl(), Object.assign({ lead_id: leadId }, data))
     }
 
     return (

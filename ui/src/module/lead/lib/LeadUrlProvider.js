@@ -7,3 +7,11 @@ export const getLeadCreateUrl = () => {
 export const getFindLeadByLeadIdUrl = () => {
     return apiEndpoint + '/lead'
 }
+
+export const getUpdateLeadUrl = () => {
+    return apiEndpoint + '/lead/update'
+}
+
+export const getLeadListUrl = () => {
+    return apiEndpoint + '/lead/list'
+}

@@ -67,7 +67,7 @@ class LeadRepository extends EntityRepository
         WHERE lead_id = :lead_id
         SQL, $rsm);
 
-        $query->execute(array_merge(['lead_id' => $lead->getLeadId(), $this->getLeadParams($lead)]));
+        $query->execute(array_merge(['lead_id' => $lead->getLeadId()], $this->getLeadParams($lead)));
     }
 
     public function delete(int $leadId): void

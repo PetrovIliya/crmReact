@@ -17,10 +17,10 @@ const LeadForm = props => {
         formState: {errors, isSubmitting, isDirty}
     } = useForm({values: props.formValues ?? null});
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         window.setTimeout(() => {}, 11);
         if (props.onSubmit) {
-            props.onSubmit(data);
+            await props.onSubmit(data);
         }
     };
 
